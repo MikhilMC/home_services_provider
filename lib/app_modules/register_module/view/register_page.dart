@@ -1,40 +1,68 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
-import 'package:home_services_provider/app_modules/home_module/view/home_page.dart';
-import 'package:home_services_provider/app_modules/register_module/view/register_page.dart';
+import 'package:home_services_provider/app_modules/add_services_module/view/add_services_page.dart';
+import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
+import 'package:home_services_provider/app_utils/app_helper.dart';
 import 'package:home_services_provider/app_widgets/custom_button.dart';
 import 'package:home_services_provider/app_widgets/normal_text_field.dart';
 import 'package:home_services_provider/app_widgets/password_text_field.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
-      // Perform login logic here
-      if (kDebugMode) {
-        print('Email: ${_emailController.text}');
-        print('Password: ${_passwordController.text}');
+  File? _profileImage;
+
+  Future<void> _pickImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        setState(() {
+          _profileImage = File(pickedFile.path);
+        });
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Service provider logged in successfully!')),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
+    } catch (e) {
+      if (mounted) {
+        AppHelper.showErrorDialogue(context, "Error: ${e.toString()}");
+      }
+    }
+  }
+
+  void _register() {
+    if (_formKey.currentState!.validate()) {
+      // Perform registration logic here
+      if (kDebugMode) {
+        print('Username: ${_usernameController.text}');
+        print('Email: ${_emailController.text}');
+        print('Phone: ${_phoneController.text}');
+        print('Password: ${_passwordController.text}');
+        if (_profileImage != null) {
+          print('Profile Image: ${_profileImage!.path}');
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Service provider registered successfully!')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddServicesPage(),
+          ),
+        );
+      }
     }
   }
 
@@ -49,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 80),
+                SizedBox(height: 40),
                 // App Logo or Title
                 Center(
                   child: Text(
@@ -64,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 10),
                 Center(
                   child: Text(
-                    'Login to manage your business',
+                    'Create your account',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -72,6 +100,43 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 40),
+                // Profile Picture Upload
+                Center(
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: _profileImage != null
+                          ? FileImage(_profileImage!)
+                          : null,
+                      child: _profileImage == null
+                          ? Icon(Icons.camera_alt, size: 40, color: Colors.grey)
+                          : null,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                // Username Field
+                Text(
+                  'Username',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+                NormalTextField(
+                  textEditingController: _usernameController,
+                  validatorFunction: (value) {
+                    // if (value == null || value.isEmpty) {
+                    //   return 'Please enter a username';
+                    // }
+                    return null;
+                  },
+                  hintText: "Enter your username",
+                  textFieldIcon: Icon(Icons.person),
+                ),
+                SizedBox(height: 20),
                 // Email Field
                 Text(
                   'Email',
@@ -97,6 +162,28 @@ class _LoginPageState extends State<LoginPage> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 20),
+                // Phone Number Field
+                Text(
+                  'Phone Number',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+                NormalTextField(
+                  textEditingController: _phoneController,
+                  validatorFunction: (value) {
+                    // if (value == null || value.isEmpty) {
+                    //   return 'Please enter your phone number';
+                    // }
+                    return null;
+                  },
+                  hintText: "Enter your phone number",
+                  textFieldIcon: Icon(Icons.phone),
+                  textInputType: TextInputType.phone,
+                ),
+                SizedBox(height: 20),
                 // Password Field
                 Text(
                   'Password',
@@ -109,39 +196,23 @@ class _LoginPageState extends State<LoginPage> {
                 PasswordTextField(
                   passwordController: _passwordController,
                 ),
-                SizedBox(height: 10),
-                // Forgot Password
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      // Navigate to forgot password screen
-                    },
-                    child: Text(
-                      'Forgot Password?',
-                      style: TextStyle(
-                        color: AppColors.secondColor,
-                      ),
-                    ),
-                  ),
-                ),
                 SizedBox(height: 30),
-                // Login Button
+                // Register Button
                 CustomButton(
                   buttonWidth: double.infinity,
                   backgroundColor: AppColors.firstColor,
                   textColor: AppColors.fifthColor,
-                  labelText: "Login",
-                  onClick: _login,
+                  labelText: "Register",
+                  onClick: _register,
                 ),
                 SizedBox(height: 20),
-                // Sign Up Option
+                // Login Option
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Don\'t have an account? ',
+                        'Already have an account? ',
                         style: TextStyle(
                           color: Colors.grey,
                         ),
@@ -151,12 +222,12 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => RegisterPage(),
+                              builder: (context) => LoginPage(),
                             ),
                           );
                         },
                         child: Text(
-                          'Sign Up',
+                          'Login',
                           style: TextStyle(
                             color: AppColors.secondColor,
                             fontWeight: FontWeight.bold,
