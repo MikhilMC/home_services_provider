@@ -20,7 +20,7 @@ class AppHelper {
             fontWeight: FontWeight.bold,
           ),
           content: Text(
-            message.toUpperCase(),
+            message,
             style: const TextStyle(
               color: Colors.black,
               fontSize: 15,

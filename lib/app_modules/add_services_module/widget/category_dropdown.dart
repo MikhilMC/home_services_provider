@@ -1,13 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:home_services_provider/app_constants/app_colors.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/categories_list_bloc/categories_list_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/model/category_model/category_model.dart';
 import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
 import 'package:home_services_provider/app_widgets/empty_list.dart';
 
-class CategoryDropdown extends StatelessWidget {
+class CategoryDropdown extends StatefulWidget {
   final CategoryModel selectedCategory;
   final Function(CategoryModel?)? onSelectingCategory;
   const CategoryDropdown({
@@ -15,6 +16,19 @@ class CategoryDropdown extends StatelessWidget {
     required this.selectedCategory,
     this.onSelectingCategory,
   });
+
+  @override
+  State<CategoryDropdown> createState() => _CategoryDropdownState();
+}
+
+class _CategoryDropdownState extends State<CategoryDropdown> {
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<CategoriesListBloc>()
+        .add(CategoriesListEvent.categoriesFetched());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +56,8 @@ class CategoryDropdown extends StatelessWidget {
 
         final categories = state.categories;
         return DropdownButtonFormField<CategoryModel>(
-          value: selectedCategory.isEmpty ? null : selectedCategory,
+          value:
+              widget.selectedCategory.isEmpty ? null : widget.selectedCategory,
           decoration: InputDecoration(
             labelText: 'Category',
             border: OutlineInputBorder(),
@@ -53,7 +68,7 @@ class CategoryDropdown extends StatelessWidget {
               child: Text(category.category),
             );
           }).toList(),
-          onChanged: onSelectingCategory,
+          onChanged: widget.onSelectingCategory,
           validator: (value) {
             if (value == null) {
               return 'Please select a category';

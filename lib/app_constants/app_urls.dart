@@ -5,4 +5,7 @@ class AppUrls {
   static const String serviceProviderRegistrationUrl =
       "$serviceUrl/service_registration/";
   static const String getCategoriesUrl = "$serviceUrl/view_categories/";
+  static const String addServicesUrl = "$serviceUrl/add_services/";
+
+  static const String serviceProviderLoginUrl = "$serviceUrl/login/";
 }
