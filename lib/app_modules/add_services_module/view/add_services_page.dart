@@ -1,6 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/add_services_module/model/category_model/category_model.dart';
 import 'package:home_services_provider/app_modules/add_services_module/widget/category_dropdown.dart';
 import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
 import 'package:home_services_provider/app_utils/app_helper.dart';
@@ -8,7 +11,11 @@ import 'package:home_services_provider/app_widgets/custom_button.dart';
 import 'package:home_services_provider/app_widgets/normal_text_field.dart';
 
 class AddServicesPage extends StatefulWidget {
-  const AddServicesPage({super.key});
+  final int serviceProviderId;
+  const AddServicesPage({
+    super.key,
+    required this.serviceProviderId,
+  });
 
   @override
   State<AddServicesPage> createState() => _AddServicesPageState();
@@ -21,7 +28,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
   final TextEditingController _ratePerHourController = TextEditingController();
 
   // Dropdown value
-  String? _selectedCategory;
+  CategoryModel? _selectedCategory;
 
   // List to store added services
   final List<Map<String, dynamic>> _servicesList = [];
@@ -78,7 +85,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
   }
 
   // Function to handle category change
-  void _onCategoryChanged(String? value) {
+  void _onCategoryChanged(CategoryModel? value) {
     if (value != _selectedCategory) {
       setState(() {
         _selectedCategory = value;
@@ -104,7 +111,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
                 children: [
                   // Category Dropdown
                   CategoryDropdown(
-                    selectedCategory: _selectedCategory ?? "",
+                    selectedCategory: _selectedCategory ?? CategoryModel.empty,
                     onSelectingCategory: _onCategoryChanged,
                   ),
                   SizedBox(height: 16),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/add_services_module/bloc/categories_list_bloc/categories_list_bloc.dart';
 import 'package:home_services_provider/app_modules/onboarding_module/view/onboarding_screen.dart';
+import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,14 +14,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home Service Pro',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.firstColor),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => RegistrationBloc(),
+        ),
+        BlocProvider(
+          create: (context) => CategoriesListBloc(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Home Service Pro',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.firstColor),
+          useMaterial3: true,
+        ),
+        home: OnboardingScreen(),
       ),
-      home: OnboardingScreen(),
     );
   }
 }

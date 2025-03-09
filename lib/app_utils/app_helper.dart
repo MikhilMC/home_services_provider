@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_services_provider/app_constants/app_colors.dart';
 
 class AppHelper {
   static Future<void> showErrorDialogue(
@@ -41,6 +42,28 @@ class AppHelper {
           ],
         );
       },
+    );
+  }
+
+  static void showCustomSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: AppColors.fifthColor,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: AppColors.firstColor, // Background color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0), // Rounded corners
+        ),
+        behavior: SnackBarBehavior.floating, // Floating style
+        margin: EdgeInsets.all(10.0), // Margin for floating behavior
+        duration: Duration(seconds: 3), // Duration to display
+      ),
     );
   }
 }
