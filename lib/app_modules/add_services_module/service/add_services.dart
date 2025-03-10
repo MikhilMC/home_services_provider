@@ -16,12 +16,12 @@ Future<AddServicesResponseModel> addServices({
       print("service function");
     }
     List<Map<String, dynamic>> body =
-        addServicesDetails.servicesOffered.map((service) {
+        addServicesDetails.servicesOffered.map((subService) {
       return {
-        "category": service.category.id.toString(),
+        "category": subService.category.id.toString(),
         "service_provider": addServicesDetails.serviceProviderId.toString(),
-        "service_name": service.serviceName,
-        "price": service.ratePerSlot.toString(),
+        "service": subService.service.id.toString(),
+        "price": subService.ratePerSlot.toString(),
       };
     }).toList();
 

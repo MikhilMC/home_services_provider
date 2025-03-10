@@ -12,30 +12,30 @@ String subServiceDataModelToJson(List<SubServiceDataModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class SubServiceDataModel {
-  String serviceName;
-  String price;
-  int serviceProvider;
   int category;
+  int serviceProvider;
+  int service;
+  String price;
 
   SubServiceDataModel({
-    required this.serviceName,
-    required this.price,
-    required this.serviceProvider,
     required this.category,
+    required this.serviceProvider,
+    required this.service,
+    required this.price,
   });
 
   factory SubServiceDataModel.fromJson(Map<String, dynamic> json) =>
       SubServiceDataModel(
-        serviceName: json["service_name"],
-        price: json["price"],
-        serviceProvider: json["service_provider"],
         category: json["category"],
+        serviceProvider: json["service_provider"],
+        service: json["service"],
+        price: json["price"],
       );
 
   Map<String, dynamic> toJson() => {
-        "service_name": serviceName,
-        "price": price,
-        "service_provider": serviceProvider,
         "category": category,
+        "service_provider": serviceProvider,
+        "service": service,
+        "price": price,
       };
 }

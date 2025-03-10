@@ -62,13 +62,15 @@ class _CategoryDropdownState extends State<CategoryDropdown> {
             labelText: 'Category',
             border: OutlineInputBorder(),
           ),
-          items: categories.map((CategoryModel category) {
-            return DropdownMenuItem<CategoryModel>(
-              value: category,
-              child: Text(category.category),
-            );
-          }).toList(),
-          onChanged: widget.onSelectingCategory,
+          items: categories.isEmpty
+              ? []
+              : categories.map((CategoryModel category) {
+                  return DropdownMenuItem<CategoryModel>(
+                    value: category,
+                    child: Text(category.category),
+                  );
+                }).toList(),
+          onChanged: categories.isEmpty ? null : widget.onSelectingCategory,
           validator: (value) {
             if (value == null) {
               return 'Please select a category';

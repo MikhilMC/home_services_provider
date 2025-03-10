@@ -7,9 +7,11 @@ import 'package:home_services_provider/app_constants/app_colors.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/add_services_bloc/add_services_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/class/add_services_details.dart';
 import 'package:home_services_provider/app_modules/add_services_module/model/category_model/category_model.dart';
+import 'package:home_services_provider/app_modules/add_services_module/model/sub_service/sub_service.dart';
 import 'package:home_services_provider/app_modules/add_services_module/model/sub_service_model.dart';
 import 'package:home_services_provider/app_modules/add_services_module/widget/category_dropdown.dart';
 import 'package:home_services_provider/app_modules/add_services_module/widget/service_card.dart';
+import 'package:home_services_provider/app_modules/add_services_module/widget/sub_service_dropdown.dart';
 import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
 import 'package:home_services_provider/app_utils/app_helper.dart';
 import 'package:home_services_provider/app_widgets/custom_button.dart';
@@ -30,11 +32,11 @@ class AddServicesPage extends StatefulWidget {
 class _AddServicesPageState extends State<AddServicesPage> {
   // Form controllers
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _serviceNameController = TextEditingController();
   final TextEditingController _ratePerSlotController = TextEditingController();
 
   // Dropdown value
   CategoryModel? _selectedCategory;
+  SubService? _selectedSubService;
 
   // List to store added services
   final List<SubServiceModel> _servicesList = [];
@@ -42,23 +44,40 @@ class _AddServicesPageState extends State<AddServicesPage> {
   @override
   void dispose() {
     super.dispose();
-    _serviceNameController.dispose();
     _ratePerSlotController.dispose();
   }
 
   // Function to add a service to the list
   void _addService() {
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
+      double? rate = double.tryParse(_ratePerSlotController.text.trim());
+      if (rate == null) {
+        AppHelper.showErrorDialogue(context, 'Invalid rate entered');
+        return;
+      }
+
       setState(() {
-        _servicesList.add(
-          SubServiceModel(
-            category: _selectedCategory ?? CategoryModel.empty,
-            serviceName: _serviceNameController.text.trim(),
-            ratePerSlot: double.parse(_ratePerSlotController.text.trim()),
-          ),
+        int existingIndex = _servicesList.indexWhere(
+          (element) => element.service.id == _selectedSubService!.id,
         );
-        // Clear the form fields except the category
-        _serviceNameController.clear();
+
+        if (existingIndex != -1) {
+          // Replace the existing object with a new one
+          _servicesList[existingIndex] = SubServiceModel(
+            category: _servicesList[existingIndex].category,
+            service: _servicesList[existingIndex].service,
+            ratePerSlot:
+                rate, // ✅ Creating a new object instead of modifying the old one
+          );
+        } else {
+          _servicesList.add(
+            SubServiceModel(
+              category: _selectedCategory ?? CategoryModel.empty,
+              service: _selectedSubService ?? SubService.empty,
+              ratePerSlot: rate,
+            ),
+          );
+        }
         _ratePerSlotController.clear();
       });
     }
@@ -110,6 +129,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
     if (value != _selectedCategory) {
       setState(() {
         _selectedCategory = value;
+        _selectedSubService = null; // Reset sub-service
         _servicesList.clear(); // Clear the services list if category changes
       });
     }
@@ -175,17 +195,17 @@ class _AddServicesPageState extends State<AddServicesPage> {
                         ),
                         SizedBox(height: 16),
                         // Service Name Text Field
-                        NormalTextField(
-                          textEditingController: _serviceNameController,
-                          validatorFunction: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a service name';
-                            }
-                            return null;
+                        SubServiceDropdown(
+                          category: _selectedCategory ?? CategoryModel.empty,
+                          selectedSubService:
+                              _selectedSubService ?? SubService.empty,
+                          onSelectingSubService: (subService) {
+                            setState(() {
+                              _selectedSubService = subService;
+                            });
                           },
-                          hintText: "Enter service name",
-                          labelText: "Service Name",
                         ),
+
                         SizedBox(height: 16),
                         // Rate Per Hour Text Field
                         NormalTextField(
@@ -237,11 +257,11 @@ class _AddServicesPageState extends State<AddServicesPage> {
                     child: ListView.builder(
                       itemCount: _servicesList.length,
                       itemBuilder: (context, index) {
-                        final service = _servicesList[index];
+                        final subService = _servicesList[index];
                         return ServiceCard(
-                          serviceName: service.serviceName,
-                          category: service.category.category,
-                          ratePerSlot: service.ratePerSlot,
+                          serviceName: subService.service.serviceName,
+                          category: subService.category.category,
+                          ratePerSlot: subService.ratePerSlot,
                           onDelete: () => _deleteService(index),
                         );
                       },
