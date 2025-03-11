@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:home_services_provider/app_constants/app_colors.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/sub_services_list_bloc/sub_services_list_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/model/category_model/category_model.dart';
 
 import 'package:home_services_provider/app_modules/add_services_module/model/sub_service/sub_service.dart';
+import 'package:home_services_provider/app_modules/add_services_module/widget/empty_dropdown.dart';
 import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
 import 'package:home_services_provider/app_widgets/empty_list.dart';
 
@@ -47,10 +47,10 @@ class _SubServiceDropdownState extends State<SubServiceDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    // final screenSize = MediaQuery.of(context).size;
     if (widget.category.isEmpty) {
-      return SizedBox(
-        height: screenSize.height * 0.0325,
+      return EmptyDropdown(
+        labelText: "Sub Service",
       );
     }
     return BlocBuilder<SubServicesListBloc, SubServicesListState>(
@@ -68,10 +68,8 @@ class _SubServiceDropdownState extends State<SubServiceDropdown> {
         }
 
         if (state is! SubServicesListSuccess) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: AppColors.firstColor,
-            ),
+          return EmptyDropdown(
+            labelText: "Sub Service",
           );
         }
 
@@ -81,7 +79,7 @@ class _SubServiceDropdownState extends State<SubServiceDropdown> {
               ? null
               : widget.selectedSubService,
           decoration: InputDecoration(
-            labelText: 'Category',
+            labelText: 'Sub Service',
             border: OutlineInputBorder(),
           ),
           items: widget.category.isEmpty
@@ -101,7 +99,7 @@ class _SubServiceDropdownState extends State<SubServiceDropdown> {
                   : widget.onSelectingSubService,
           validator: (value) {
             if (value == null) {
-              return 'Please select a category';
+              return 'Please select a sub service';
             }
             return null;
           },

@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:home_services_provider/app_constants/app_colors.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/categories_list_bloc/categories_list_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/model/category_model/category_model.dart';
+import 'package:home_services_provider/app_modules/add_services_module/widget/empty_dropdown.dart';
 import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
 import 'package:home_services_provider/app_widgets/empty_list.dart';
 
@@ -47,10 +47,8 @@ class _CategoryDropdownState extends State<CategoryDropdown> {
         }
 
         if (state is! CategoriesListSuccess) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: AppColors.firstColor,
-            ),
+          return EmptyDropdown(
+            labelText: "Category",
           );
         }
 
