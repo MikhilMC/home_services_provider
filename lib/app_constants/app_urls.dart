@@ -9,4 +9,7 @@ class AppUrls {
   static const String addServicesUrl = "$serviceUrl/add_services/";
 
   static const String serviceProviderLoginUrl = "$serviceUrl/login/";
+
+  static const String getProfileDetailsUrl =
+      "$serviceUrl/view_service_provider_profile/";
 }

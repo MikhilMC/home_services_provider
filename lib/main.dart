@@ -4,6 +4,7 @@ import 'package:home_services_provider/app_constants/app_colors.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/add_services_bloc/add_services_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/categories_list_bloc/categories_list_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/sub_services_list_bloc/sub_services_list_bloc.dart';
+import 'package:home_services_provider/app_modules/home_module/bloc/profile_bloc/profile_bloc.dart';
 import 'package:home_services_provider/app_modules/login_module/bloc/login_bloc.dart';
 import 'package:home_services_provider/app_modules/onboarding_module/view/onboarding_screen.dart';
 import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc.dart';
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SubServicesListBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ProfileBloc(),
         ),
       ],
       child: MaterialApp(

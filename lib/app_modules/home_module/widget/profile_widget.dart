@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:home_services_provider/app_modules/home_module/widget/profile_header.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -29,20 +30,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Profile Header
-          Center(
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(profileImage),
-                ),
-                const SizedBox(height: 10),
-                Text(username, style: Theme.of(context).textTheme.titleLarge),
-                Text(email, style: TextStyle(color: Colors.grey[600])),
-                Text(phone, style: TextStyle(color: Colors.grey[600])),
-              ],
-            ),
-          ),
+          ProfileHeader(),
           const SizedBox(height: 20),
 
           // Category Section
