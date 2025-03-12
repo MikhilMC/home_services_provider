@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/home_module/bloc/provider_services_bloc/provider_services_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/widget/profile_header.dart';
+import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -9,62 +13,97 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  // Sample Data
-  final String profileImage =
-      "https://placehold.co/500x500"; // Replace with actual image URL
-  final String username = "John Doe";
-  final String email = "john.doe@example.com";
-  final String phone = "+1 234 567 890";
-  final String category = "Plumbing";
-  final List<Map<String, dynamic>> subServices = [
-    {"name": "Pipe Fixing", "rate": 150},
-    {"name": "Leak Repair", "rate": 240},
-    {"name": "Bathroom Plumbing", "rate": 160},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<ProviderServicesBloc>()
+        .add(ProviderServicesEvent.providerServicesFetched());
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Profile Header
-          ProfileHeader(),
-          const SizedBox(height: 20),
+    return BlocBuilder<ProviderServicesBloc, ProviderServicesState>(
+      builder: (context, state) {
+        if (state is ProviderServicesError) {
+          return CustomErrorWidget(
+            errorMessage: state.errorMessage,
+          );
+        }
 
-          // Category Section
-          Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: ListTile(
-              leading: const Icon(Icons.category, color: Colors.blue),
-              title: const Text("Service Category"),
-              subtitle: Text(category),
+        if (state is! ProviderServicesSuccess) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: AppColors.firstColor,
             ),
-          ),
+          );
+        }
 
-          const SizedBox(height: 10),
+        final providerServices = state.providerServices;
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Profile Header
+              ProfileHeader(),
+              const SizedBox(height: 20),
 
-          // Sub Services Section
-          Text("Sub Services & Rates",
-              style: Theme.of(context).textTheme.bodyLarge),
-          const SizedBox(height: 5),
-
-          // List of Services with Rates
-          ...subServices.map((service) {
-            return Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: ListTile(
-                title: Text(service["name"]),
-                trailing: Text("₹${service["rate"]}/3 hrs",
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+              // Category Section
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: ListTile(
+                  leading: const Icon(Icons.category, color: Colors.blue),
+                  title: const Text("Service Category"),
+                  titleTextStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                  ),
+                  subtitle:
+                      Text(providerServices.services[0].category.category),
+                  subtitleTextStyle: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            );
-          }),
-        ],
-      ),
+
+              const SizedBox(height: 10),
+
+              // Sub Services Section
+              Text("Sub Services & Rates",
+                  style: Theme.of(context).textTheme.bodyLarge),
+              const SizedBox(height: 5),
+
+              // List of Services with Rates
+              ...providerServices.services.map((service) {
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      service.service.serviceName,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    trailing: Text(
+                      "₹${service.price}/3 hrs",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+      },
     );
   }
 }
