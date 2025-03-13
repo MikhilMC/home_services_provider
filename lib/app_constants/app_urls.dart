@@ -14,4 +14,5 @@ class AppUrls {
       "$serviceUrl/view_service_provider_profile/";
   static const String getProviderServicesUrl =
       "$serviceUrl/view_provider_services/";
+  static const String getServiceProviderSlotsUrl = "$serviceUrl/view_slots/";
 }

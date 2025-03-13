@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/add_availability_slot_module/bloc/slots_bloc/slots_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/add_services_bloc/add_services_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/categories_list_bloc/categories_list_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/sub_services_list_bloc/sub_services_list_bloc.dart';
@@ -41,6 +42,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProviderServicesBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SlotsBloc(),
         ),
       ],
       child: MaterialApp(

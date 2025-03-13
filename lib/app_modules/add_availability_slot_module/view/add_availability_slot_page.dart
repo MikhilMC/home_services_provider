@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/add_availability_slot_module/bloc/slots_bloc/slots_bloc.dart';
+import 'package:home_services_provider/app_modules/add_availability_slot_module/model/service_provider_slots_model.dart';
+import 'package:home_services_provider/app_utils/app_helper.dart';
+import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
 import 'package:intl/intl.dart';
 
 class AddAvailabilitySlotPage extends StatefulWidget {
@@ -11,17 +17,14 @@ class AddAvailabilitySlotPage extends StatefulWidget {
 
 class _AddAvailabilitySlotPageState extends State<AddAvailabilitySlotPage> {
   DateTime? selectedDate;
-  final List<String> slots = [
-    "09:00 - 12:00",
-    "12:00 - 15:00",
-    "15:00 - 18:00",
-    "18:00 - 21:00",
-    "21:00 - 00:00",
-    "00:00 - 03:00",
-    "03:00 - 06:00",
-    "06:00 - 09:00",
-  ];
-  final Set<int> selectedSlots = {};
+
+  final Set<Slot> selectedSlots = {};
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<SlotsBloc>().add(SlotsEvent.serviceProviderSlotsFetched());
+  }
 
   // Function to pick a date
   Future<void> _pickDate() async {
@@ -41,12 +44,12 @@ class _AddAvailabilitySlotPageState extends State<AddAvailabilitySlotPage> {
   }
 
   // Function to toggle slot selection
-  void _toggleSlot(int index) {
+  void _toggleSlot(Slot slot) {
     setState(() {
-      if (selectedSlots.contains(index)) {
-        selectedSlots.remove(index);
+      if (selectedSlots.contains(slot)) {
+        selectedSlots.remove(slot);
       } else {
-        selectedSlots.add(index);
+        selectedSlots.add(slot);
       }
     });
   }
@@ -62,8 +65,9 @@ class _AddAvailabilitySlotPageState extends State<AddAvailabilitySlotPage> {
     }
 
     // Process selected slots
-    List<String> chosenSlots =
-        selectedSlots.map((index) => slots[index]).toList();
+    List<String> chosenSlots = selectedSlots.map((slot) {
+      return _getTimeSlotString(slot);
+    }).toList();
 
     // Show confirmation
     ScaffoldMessenger.of(context).showSnackBar(
@@ -77,6 +81,10 @@ class _AddAvailabilitySlotPageState extends State<AddAvailabilitySlotPage> {
       selectedDate = null;
       selectedSlots.clear();
     });
+  }
+
+  String _getTimeSlotString(Slot slot) {
+    return "${AppHelper.convertTo12HourFormat(slot.slotStart)} - ${AppHelper.convertTo12HourFormat(slot.slotEnd)}";
   }
 
   @override
@@ -109,12 +117,15 @@ class _AddAvailabilitySlotPageState extends State<AddAvailabilitySlotPage> {
                           : DateFormat('EEEE, MMM d, yyyy')
                               .format(selectedDate!),
                       style: TextStyle(
-                          fontSize: 16,
-                          color: selectedDate == null
-                              ? Colors.grey
-                              : Colors.black),
+                        fontSize: 16,
+                        color:
+                            selectedDate == null ? Colors.grey : Colors.black,
+                      ),
                     ),
-                    const Icon(Icons.calendar_today, color: Colors.grey),
+                    const Icon(
+                      Icons.calendar_today,
+                      color: Colors.grey,
+                    ),
                   ],
                 ),
               ),
@@ -123,42 +134,69 @@ class _AddAvailabilitySlotPageState extends State<AddAvailabilitySlotPage> {
             const SizedBox(height: 16),
 
             // Slots Grid
-            Text("Select Available Slots",
-                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              "Select Available Slots",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
-            Expanded(
-              child: GridView.builder(
-                itemCount: slots.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 slots per row
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 3,
-                ),
-                itemBuilder: (context, index) {
-                  bool isSelected = selectedSlots.contains(index);
-                  return GestureDetector(
-                    onTap: () => _toggleSlot(index),
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? Colors.blue.withValues(alpha: 0.8)
-                            : Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: isSelected ? Colors.blue : Colors.grey),
-                      ),
-                      child: Text(
-                        slots[index],
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: isSelected ? Colors.white : Colors.black),
-                      ),
+            BlocBuilder<SlotsBloc, SlotsState>(
+              builder: (context, state) {
+                if (state is SlotsError) {
+                  return CustomErrorWidget(
+                    errorMessage: state.errorMessage,
+                  );
+                }
+
+                if (state is! SlotsSuccess) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.firstColor,
                     ),
                   );
-                },
-              ),
+                }
+
+                final serviceProviderSlots = state.slots;
+
+                return Expanded(
+                  child: GridView.builder(
+                    itemCount: serviceProviderSlots.slots.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 2 slots per row
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      childAspectRatio: 3,
+                    ),
+                    itemBuilder: (context, index) {
+                      final slot = serviceProviderSlots.slots[index];
+                      bool isSelected = selectedSlots.contains(slot);
+                      String timeLabel = _getTimeSlotString(slot);
+                      return GestureDetector(
+                        onTap: () => _toggleSlot(slot),
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Colors.blue.withValues(alpha: 0.8)
+                                : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isSelected ? Colors.blue : Colors.grey,
+                            ),
+                          ),
+                          child: Text(
+                            timeLabel,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: isSelected ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
 
             const SizedBox(height: 16),

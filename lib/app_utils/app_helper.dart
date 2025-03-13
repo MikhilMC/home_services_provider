@@ -66,4 +66,21 @@ class AppHelper {
       ),
     );
   }
+
+  static String convertTo12HourFormat(String time24) {
+    // Split the time string into hours, minutes, and seconds
+    List<String> parts = time24.split(':');
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1]);
+
+    // Determine AM or PM
+    String period = hour >= 12 ? 'PM' : 'AM';
+
+    // Convert hour to 12-hour format
+    int hour12 = hour % 12;
+    if (hour12 == 0) hour12 = 12; // Handle midnight and noon
+
+    // Return formatted time string
+    return '$hour12:${minute.toString().padLeft(2, '0')} $period';
+  }
 }
