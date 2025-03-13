@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AddServicesPage(
-                          serviceProviderId: int.parse(response.userId),
+                          serviceProviderId: response.userId,
                         ),
                       ),
                     );

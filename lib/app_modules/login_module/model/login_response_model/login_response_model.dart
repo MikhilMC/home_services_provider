@@ -15,7 +15,7 @@ String loginResponseModelToJson(LoginResponseModel data) =>
 class LoginResponseModel {
   String status;
   String message;
-  String userId;
+  int userId;
   String username;
   String userstatus;
   LoginDataModel data;

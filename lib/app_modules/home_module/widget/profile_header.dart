@@ -25,47 +25,53 @@ class _ProfileHeaderState extends State<ProfileHeader> {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         if (state is ProfileDetailsError) {
-          return CustomErrorWidget(
-            errorMessage: state.errorMessage,
+          return SliverToBoxAdapter(
+            child: CustomErrorWidget(
+              errorMessage: state.errorMessage,
+            ),
           );
         }
 
         if (state is! ProfileDetailsSuccess) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: AppColors.firstColor,
+          return SliverToBoxAdapter(
+            child: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.firstColor,
+              ),
             ),
           );
         }
 
         final profileDetails = state.profileDetails;
-        return Center(
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: CachedNetworkImageProvider(
-                  "${AppUrls.baseUrl}/${profileDetails.image}",
+        return SliverToBoxAdapter(
+          child: Center(
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: CachedNetworkImageProvider(
+                    "${AppUrls.baseUrl}/${profileDetails.image}",
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                profileDetails.username,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text(
-                profileDetails.email,
-                style: TextStyle(
-                  color: Colors.grey[600],
+                const SizedBox(height: 10),
+                Text(
+                  profileDetails.username,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-              ),
-              Text(
-                profileDetails.phone,
-                style: TextStyle(
-                  color: Colors.grey[600],
+                Text(
+                  profileDetails.email,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                  ),
                 ),
-              ),
-            ],
+                Text(
+                  profileDetails.phone,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

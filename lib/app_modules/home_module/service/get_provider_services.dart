@@ -8,7 +8,7 @@ import 'package:home_services_provider/app_modules/home_module/model/service_mod
 
 Future<ServiceModel> getProviderServices() async {
   try {
-    int providerId = 11;
+    int providerId = 1;
     Map<String, dynamic> params = {
       "id": providerId.toString(),
     };

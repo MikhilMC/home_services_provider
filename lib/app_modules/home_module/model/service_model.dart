@@ -10,47 +10,23 @@ ServiceModel serviceModelFromJson(String str) =>
 String serviceModelToJson(ServiceModel data) => json.encode(data.toJson());
 
 class ServiceModel {
-  List<ServiceElement> services;
+  Category category;
+  List<Service> services;
 
   ServiceModel({
+    required this.category,
     required this.services,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) => ServiceModel(
-        services: List<ServiceElement>.from(
-            json["services"].map((x) => ServiceElement.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "services": List<dynamic>.from(services.map((x) => x.toJson())),
-      };
-}
-
-class ServiceElement {
-  Category category;
-  int serviceProvider;
-  ServiceService service;
-  String price;
-
-  ServiceElement({
-    required this.category,
-    required this.serviceProvider,
-    required this.service,
-    required this.price,
-  });
-
-  factory ServiceElement.fromJson(Map<String, dynamic> json) => ServiceElement(
         category: Category.fromJson(json["category"]),
-        serviceProvider: json["service_provider"],
-        service: ServiceService.fromJson(json["service"]),
-        price: json["price"],
+        services: List<Service>.from(
+            json["services"].map((x) => Service.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "category": category.toJson(),
-        "service_provider": serviceProvider,
-        "service": service.toJson(),
-        "price": price,
+        "services": List<dynamic>.from(services.map((x) => x.toJson())),
       };
 }
 
@@ -74,26 +50,26 @@ class Category {
       };
 }
 
-class ServiceService {
-  int id;
-  int category;
+class Service {
+  int service;
   String serviceName;
+  double price;
 
-  ServiceService({
-    required this.id,
-    required this.category,
+  Service({
+    required this.service,
     required this.serviceName,
+    required this.price,
   });
 
-  factory ServiceService.fromJson(Map<String, dynamic> json) => ServiceService(
-        id: json["id"],
-        category: json["category"],
+  factory Service.fromJson(Map<String, dynamic> json) => Service(
+        service: json["service"],
         serviceName: json["service_name"],
+        price: json["price"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "category": category,
+        "service": service,
         "service_name": serviceName,
+        "price": price,
       };
 }
