@@ -1,35 +1,39 @@
 // To parse this JSON data, do
 //
-//     final addServiceResponseModel = addServiceResponseModelFromJson(jsonString);
+//     final addServicesResponseModel = addServicesResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
 import 'package:home_services_provider/app_modules/add_services_module/model/sub_service_data_model/sub_service_data_model.dart';
 
-AddServicesResponseModel addServiceResponseModelFromJson(String str) =>
+AddServicesResponseModel addServicesResponseModelFromJson(String str) =>
     AddServicesResponseModel.fromJson(json.decode(str));
 
-String addServiceResponseModelToJson(AddServicesResponseModel data) =>
+String addServicesResponseModelToJson(AddServicesResponseModel data) =>
     json.encode(data.toJson());
 
 class AddServicesResponseModel {
-  String message;
-  List<SubServiceDataModel> data;
+  int category;
+  int serviceProvider;
+  List<SubServiceDataModel> services;
 
   AddServicesResponseModel({
-    required this.message,
-    required this.data,
+    required this.category,
+    required this.serviceProvider,
+    required this.services,
   });
 
   factory AddServicesResponseModel.fromJson(Map<String, dynamic> json) =>
       AddServicesResponseModel(
-        message: json["message"],
-        data: List<SubServiceDataModel>.from(
-            json["data"].map((x) => SubServiceDataModel.fromJson(x))),
+        category: json["category"],
+        serviceProvider: json["service_provider"],
+        services: List<SubServiceDataModel>.from(
+            json["services"].map((x) => SubServiceDataModel.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "message": message,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "category": category,
+        "service_provider": serviceProvider,
+        "services": List<dynamic>.from(services.map((x) => x.toJson())),
       };
 }

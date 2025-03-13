@@ -3,9 +3,11 @@ import 'package:home_services_provider/app_modules/add_services_module/model/sub
 
 class AddServicesDetails {
   final int serviceProviderId;
+  final int categoryId;
   final List<SubServiceModel> servicesOffered;
   AddServicesDetails({
     required this.serviceProviderId,
+    required this.categoryId,
     required this.servicesOffered,
   });
 }

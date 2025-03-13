@@ -64,7 +64,6 @@ class _AddServicesPageState extends State<AddServicesPage> {
         if (existingIndex != -1) {
           // Replace the existing object with a new one
           _servicesList[existingIndex] = SubServiceModel(
-            category: _servicesList[existingIndex].category,
             service: _servicesList[existingIndex].service,
             ratePerSlot:
                 rate, // ✅ Creating a new object instead of modifying the old one
@@ -72,7 +71,6 @@ class _AddServicesPageState extends State<AddServicesPage> {
         } else {
           _servicesList.add(
             SubServiceModel(
-              category: _selectedCategory ?? CategoryModel.empty,
               service: _selectedSubService ?? SubService.empty,
               ratePerSlot: rate,
             ),
@@ -92,6 +90,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
           print("screen");
         }
         final AddServicesDetails addServicesDetails = AddServicesDetails(
+          categoryId: _selectedCategory!.id,
           serviceProviderId: widget.serviceProviderId,
           servicesOffered: _servicesList,
         );
@@ -146,23 +145,16 @@ class _AddServicesPageState extends State<AddServicesPage> {
           state.whenOrNull(
             loading: () {},
             success: (response) {
-              if (response.message == "Services added successfully") {
-                AppHelper.showCustomSnackBar(
-                  context,
-                  "Services added successfully",
-                );
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoginPage(),
-                  ),
-                );
-              } else {
-                AppHelper.showErrorDialogue(
-                  context,
-                  "Adding services failed",
-                );
-              }
+              AppHelper.showCustomSnackBar(
+                context,
+                "Services added successfully",
+              );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ),
+              );
             },
             failure: (errorMessage) => AppHelper.showErrorDialogue(
               context,
@@ -260,7 +252,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
                         final subService = _servicesList[index];
                         return ServiceCard(
                           serviceName: subService.service.serviceName,
-                          category: subService.category.category,
+                          category: _selectedCategory!.category,
                           ratePerSlot: subService.ratePerSlot,
                           onDelete: () => _deleteService(index),
                         );

@@ -15,15 +15,16 @@ Future<AddServicesResponseModel> addServices({
     if (kDebugMode) {
       print("service function");
     }
-    List<Map<String, dynamic>> body =
-        addServicesDetails.servicesOffered.map((subService) {
-      return {
-        "category": subService.category.id.toString(),
-        "service_provider": addServicesDetails.serviceProviderId.toString(),
-        "service": subService.service.id.toString(),
-        "price": subService.ratePerSlot.toString(),
-      };
-    }).toList();
+    Map<String, dynamic> body = {
+      "category": addServicesDetails.categoryId.toString(),
+      "service_provider": addServicesDetails.serviceProviderId.toString(),
+      "services": addServicesDetails.servicesOffered.map((service) {
+        return {
+          "service": service.service.id.toString(),
+          "price": service.ratePerSlot.toString(),
+        };
+      }).toList()
+    };
 
     final resp = await http.post(
       Uri.parse(AppUrls.addServicesUrl),
