@@ -16,6 +16,8 @@ class ServiceProviderDataModel {
   String email;
   String password;
   String phone;
+  String latitude;
+  String longitude;
   String image;
 
   ServiceProviderDataModel({
@@ -24,6 +26,8 @@ class ServiceProviderDataModel {
     required this.email,
     required this.password,
     required this.phone,
+    required this.latitude,
+    required this.longitude,
     required this.image,
   });
 
@@ -34,6 +38,8 @@ class ServiceProviderDataModel {
         email: json["email"],
         password: json["password"],
         phone: json["phone"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
         image: json["image"],
       );
 
@@ -43,6 +49,8 @@ class ServiceProviderDataModel {
         "email": email,
         "password": password,
         "phone": phone,
+        "latitude": latitude,
+        "longitude": longitude,
         "image": image,
       };
 }

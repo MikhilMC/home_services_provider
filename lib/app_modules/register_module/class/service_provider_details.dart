@@ -5,12 +5,16 @@ class ServiceProviderDetails {
   final String username;
   final String email;
   final String phone;
+  final double latitude;
+  final double longitude;
   final String password;
   final File image;
   ServiceProviderDetails({
     required this.username,
     required this.email,
     required this.phone,
+    required this.latitude,
+    required this.longitude,
     required this.password,
     required this.image,
   });

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:home_services_provider/app_constants/app_colors.dart';
-import 'package:home_services_provider/app_modules/add_services_module/bloc/categories_list_bloc/categories_list_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/view/add_services_page.dart';
 import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
 import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc.dart';
@@ -28,15 +28,20 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _latitudeController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
 
   File? _profileImage;
 
   @override
-  void initState() {
-    super.initState();
-    context
-        .read<CategoriesListBloc>()
-        .add(CategoriesListEvent.categoriesFetched());
+  void dispose() {
+    super.dispose();
+    _usernameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
   }
 
   Future<void> _pickImage() async {
@@ -56,6 +61,65 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Future<void> _getLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if the location permissions are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled, return
+      if (mounted) {
+        AppHelper.showErrorDialogue(
+          context,
+          "Location Services disabled",
+        );
+      }
+
+      return;
+    }
+
+    // Check location permissions
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, return
+        if (mounted) {
+          AppHelper.showErrorDialogue(
+            context,
+            "Location Permission denied",
+          );
+        }
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are permanently denied, return
+      if (mounted) {
+        AppHelper.showErrorDialogue(
+          context,
+          "Location Permission denied forever",
+        );
+      }
+      return;
+    }
+
+    // Get the current location
+    Position position = await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      ),
+    );
+
+    setState(() {
+      _latitudeController.text = position.latitude.toString();
+      _longitudeController.text = position.longitude.toString();
+    });
+  }
+
   void _register() {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
@@ -67,6 +131,8 @@ class _RegisterPageState extends State<RegisterPage> {
           phone: _phoneController.text.trim(),
           password: _passwordController.text.trim(),
           image: _profileImage!,
+          latitude: double.parse(_latitudeController.text.trim()),
+          longitude: double.parse(_longitudeController.text.trim()),
         );
 
         final registrationBloc = BlocProvider.of<RegistrationBloc>(context);
@@ -92,6 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: BlocConsumer<RegistrationBloc, RegistrationState>(
         listener: (context, state) {
@@ -255,6 +322,61 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: "Enter your phone number",
                         textFieldIcon: Icon(Icons.phone),
                         textInputType: TextInputType.phone,
+                      ),
+                      SizedBox(height: 20),
+                      // Place Name
+                      Text(
+                        'Location',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: screenSize.width * 0.375,
+                            child: NormalTextField(
+                              labelText: 'Latitude',
+                              hintText: 'Latitude',
+                              isDisabled: true,
+                              textEditingController: _latitudeController,
+                              validatorFunction: (_) {
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: screenSize.width * 0.375,
+                            child: NormalTextField(
+                              labelText: 'Longitude',
+                              hintText: 'Longitude',
+                              isDisabled: true,
+                              textEditingController: _longitudeController,
+                              validatorFunction: (_) {
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: screenSize.height * 0.06,
+                            child: IconButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                backgroundColor: AppColors.firstColor,
+                              ),
+                              icon: Icon(
+                                Icons.location_pin,
+                                color: Colors.white,
+                              ),
+                              onPressed: _getLocation,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 20),
                       // Password Field

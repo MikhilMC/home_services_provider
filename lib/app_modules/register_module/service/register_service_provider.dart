@@ -20,6 +20,8 @@ Future<RegisterResponseModel> registerServiceProvider({
     request.fields['email'] = serviceProviderDetails.email;
     request.fields['password'] = serviceProviderDetails.password;
     request.fields['phone'] = serviceProviderDetails.phone;
+    request.fields['latitude'] = serviceProviderDetails.latitude.toString();
+    request.fields['longitude'] = serviceProviderDetails.longitude.toString();
 
     var imageStream = http.ByteStream(serviceProviderDetails.image.openRead());
     var imageLength = await serviceProviderDetails.image.length();

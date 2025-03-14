@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:home_services_provider/app_modules/add_availability_slot_module/model/slot.dart';
+
 ServiceProviderSlotsModel serviceProviderSlotsModelFromJson(String str) =>
     ServiceProviderSlotsModel.fromJson(json.decode(str));
 
@@ -24,33 +26,5 @@ class ServiceProviderSlotsModel {
 
   Map<String, dynamic> toJson() => {
         "slots": List<dynamic>.from(slots.map((x) => x.toJson())),
-      };
-}
-
-class Slot {
-  int id;
-  String slotStart;
-  String slotEnd;
-  bool isBooked;
-
-  Slot({
-    required this.id,
-    required this.slotStart,
-    required this.slotEnd,
-    required this.isBooked,
-  });
-
-  factory Slot.fromJson(Map<String, dynamic> json) => Slot(
-        id: json["id"],
-        slotStart: json["slot_start"],
-        slotEnd: json["slot_end"],
-        isBooked: json["is_booked"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "slot_start": slotStart,
-        "slot_end": slotEnd,
-        "is_booked": isBooked,
       };
 }
