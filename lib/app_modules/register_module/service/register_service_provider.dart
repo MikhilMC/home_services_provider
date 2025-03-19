@@ -33,6 +33,17 @@ Future<RegisterResponseModel> registerServiceProvider({
     );
     request.files.add(multipartFile);
 
+    var idProofStream =
+        http.ByteStream(serviceProviderDetails.idProof.openRead());
+    var idProofLength = await serviceProviderDetails.idProof.length();
+    var idProofMultipartFile = http.MultipartFile(
+      'id_proof',
+      idProofStream,
+      idProofLength,
+      filename: serviceProviderDetails.idProof.path.split("/").last,
+    );
+    request.files.add(idProofMultipartFile);
+
     // Send request
     final resp = await request.send();
 

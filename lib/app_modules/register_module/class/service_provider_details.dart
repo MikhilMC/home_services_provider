@@ -9,6 +9,7 @@ class ServiceProviderDetails {
   final double longitude;
   final String password;
   final File image;
+  final File idProof;
   ServiceProviderDetails({
     required this.username,
     required this.email,
@@ -17,5 +18,6 @@ class ServiceProviderDetails {
     required this.longitude,
     required this.password,
     required this.image,
+    required this.idProof,
   });
 }

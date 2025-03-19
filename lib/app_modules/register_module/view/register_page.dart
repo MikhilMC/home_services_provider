@@ -31,7 +31,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _latitudeController = TextEditingController();
   final TextEditingController _longitudeController = TextEditingController();
 
+  final ImagePicker _picker = ImagePicker();
+
   File? _profileImage;
+  File? _idProof;
 
   @override
   void dispose() {
@@ -46,8 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _pickImage() async {
     try {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
       if (pickedFile != null) {
         setState(() {
@@ -58,6 +60,16 @@ class _RegisterPageState extends State<RegisterPage> {
       if (mounted) {
         AppHelper.showErrorDialogue(context, "Error: ${e.toString()}");
       }
+    }
+  }
+
+  Future<void> _pickIdProof() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _idProof = File(pickedFile.path);
+      });
     }
   }
 
@@ -133,6 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
           image: _profileImage!,
           latitude: double.parse(_latitudeController.text.trim()),
           longitude: double.parse(_longitudeController.text.trim()),
+          idProof: _idProof!,
         );
 
         final registrationBloc = BlocProvider.of<RegistrationBloc>(context);
@@ -324,7 +337,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         textInputType: TextInputType.phone,
                       ),
                       SizedBox(height: 20),
-                      // Place Name
+                      // Location
                       Text(
                         'Location',
                         style: TextStyle(
@@ -377,6 +390,38 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(height: 20),
+                      // ID Proof
+                      // Place Name
+                      Text(
+                        'ID Proof',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: _pickIdProof,
+                        child: Container(
+                          width: double.infinity,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: _idProof == null
+                              ? Icon(
+                                  Icons.add_a_photo,
+                                  size: 50,
+                                  color: Colors.grey,
+                                )
+                              : Image.file(
+                                  _idProof!,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                       ),
                       SizedBox(height: 20),
                       // Password Field
