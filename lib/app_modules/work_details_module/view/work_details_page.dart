@@ -1,8 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class WorkDetailsPage extends StatefulWidget {
-  const WorkDetailsPage({super.key});
+  final int serviceId;
+  const WorkDetailsPage({
+    super.key,
+    required this.serviceId,
+  });
 
   @override
   State<WorkDetailsPage> createState() => _WorkDetailsPageState();
