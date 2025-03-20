@@ -13,6 +13,7 @@ import 'package:home_services_provider/app_modules/home_module/bloc/provider_ser
 import 'package:home_services_provider/app_modules/login_module/bloc/login_bloc.dart';
 import 'package:home_services_provider/app_modules/onboarding_module/view/onboarding_screen.dart';
 import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc.dart';
+import 'package:home_services_provider/app_modules/reviews_module/bloc/user_reviews_bloc.dart';
 import 'package:home_services_provider/app_modules/work_details_module/bloc/start_work_bloc/start_work_bloc.dart';
 import 'package:home_services_provider/app_modules/work_details_module/bloc/work_details_bloc/work_details_bloc.dart';
 
@@ -65,6 +66,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => BookingHistoryBloc(),
+        ),
+        BlocProvider(
+          create: (context) => UserReviewsBloc(),
         ),
       ],
       child: MaterialApp(

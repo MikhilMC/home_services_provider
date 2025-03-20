@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:home_services_provider/app_modules/reviews_module/model/review.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/reviews_module/bloc/user_reviews_bloc.dart';
 import 'package:home_services_provider/app_modules/reviews_module/widget/review_card.dart';
+import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
+import 'package:home_services_provider/app_widgets/empty_list.dart';
 
 class ReviewListPage extends StatefulWidget {
   const ReviewListPage({super.key});
@@ -10,38 +14,48 @@ class ReviewListPage extends StatefulWidget {
 }
 
 class _ReviewListPageState extends State<ReviewListPage> {
-  final List<Review> reviews = [
-    Review(
-      userName: "John Doe",
-      rating: 5,
-      feedback: "Great work! The service was excellent and on time.",
-      date: DateTime(2023, 10, 15),
-    ),
-    Review(
-      userName: "Jane Smith",
-      rating: 4,
-      feedback: "Good job, but there was a slight delay.",
-      date: DateTime(2023, 10, 10),
-    ),
-    Review(
-      userName: "Alice Johnson",
-      rating: 3,
-      feedback: "Average service. Could be better.",
-      date: DateTime(2023, 10, 5),
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    context.read<UserReviewsBloc>().add(UserReviewsEvent.userReviewsFetched());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("User Reviews")),
-      body: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: reviews.length,
-        itemBuilder: (context, index) {
-          final review = reviews[index];
-          return ReviewCard(review: review);
+      body: BlocBuilder<UserReviewsBloc, UserReviewsState>(
+        builder: (context, state) {
+          if (state is UserReviewsError) {
+            return CustomErrorWidget(
+              errorMessage: state.errorMessage,
+            );
+          }
+
+          if (state is UserReviewsEmpty) {
+            return EmptyList(
+              message: "No user reviews available",
+            );
+          }
+
+          if (state is! UserReviewsSuccess) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: AppColors.firstColor,
+              ),
+            );
+          }
+
+          final userReviews = state.userReviews;
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: userReviews.length,
+            itemBuilder: (context, index) {
+              final review = userReviews[index];
+              return ReviewCard(review: review);
+            },
+          );
         },
       ),
     );

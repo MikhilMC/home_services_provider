@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:home_services_provider/app_modules/reviews_module/model/review.dart';
+import 'package:home_services_provider/app_modules/reviews_module/model/user_review_model.dart';
 import 'package:home_services_provider/app_modules/reviews_module/widget/star_rating.dart';
 
 class ReviewCard extends StatelessWidget {
-  final Review review;
+  final UserReviewModel review;
 
   const ReviewCard({super.key, required this.review});
 
@@ -23,8 +23,8 @@ class ReviewCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  review.userName,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  review.bookingDetails.userName,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -36,7 +36,7 @@ class ReviewCard extends StatelessWidget {
 
             // Feedback
             Text(
-              review.feedback,
+              review.reviewText,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
 
@@ -44,7 +44,7 @@ class ReviewCard extends StatelessWidget {
 
             // Date
             Text(
-              _formatDate(review.date),
+              _formatDate(review.bookingDetails.bookingDate),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.grey,
                   ),
