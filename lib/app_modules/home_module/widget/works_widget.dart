@@ -4,6 +4,7 @@ import 'package:home_services_provider/app_constants/app_colors.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/booked_services_bloc/booked_services_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/widget/booking_card.dart';
 import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
+import 'package:home_services_provider/app_widgets/empty_list.dart';
 
 class WorksWidget extends StatefulWidget {
   const WorksWidget({super.key});
@@ -45,21 +46,26 @@ class _WorksWidgetState extends State<WorksWidget> {
           slivers: [
             // Booked Works Section
 
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  bookedServices.bookedServices.isNotEmpty
-                      ? 'Booked Works'
-                      : 'No booked works available',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+            bookedServices.bookedServices.isNotEmpty
+                ? SliverPadding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    sliver: SliverToBoxAdapter(
+                      child: Text(
+                        'Booked Works',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  )
+                : SliverToBoxAdapter(
+                    child: EmptyList(
+                      message: "No booked works available",
+                    ),
                   ),
-                ),
-              ),
-            ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) => Padding(
@@ -75,21 +81,26 @@ class _WorksWidgetState extends State<WorksWidget> {
 
             // Ongoing Works Section
 
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  bookedServices.ongoingServices.isNotEmpty
-                      ? 'Ongoing Works'
-                      : 'No ongoing works available',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+            bookedServices.ongoingServices.isNotEmpty
+                ? SliverPadding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    sliver: SliverToBoxAdapter(
+                      child: Text(
+                        'Ongoing Works',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  )
+                : SliverToBoxAdapter(
+                    child: EmptyList(
+                      message: "No ongoing works available",
+                    ),
                   ),
-                ),
-              ),
-            ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) => Padding(

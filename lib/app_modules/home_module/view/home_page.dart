@@ -6,6 +6,7 @@ import 'package:home_services_provider/app_modules/home_module/widget/history_wi
 import 'package:home_services_provider/app_modules/home_module/widget/profile_widget.dart';
 import 'package:home_services_provider/app_modules/home_module/widget/works_widget.dart';
 import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
+import 'package:home_services_provider/app_modules/reviews_module/view/review_list_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -167,6 +168,27 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => EarningsPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.reviews,
+                color: AppColors.firstColor,
+              ),
+              title: const Text(
+                'User Reviews',
+                style: TextStyle(
+                  color: AppColors.firstColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ReviewListPage(),
                   ),
                 );
               },
