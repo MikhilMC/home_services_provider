@@ -21,4 +21,5 @@ class AppUrls {
       "$serviceUrl/service_available_time/";
 
   static const String getWorkDetailsUrl = "$serviceUrl/single_booking/";
+  static const String startWorkUrl = "$serviceUrl/status_ongoing/";
 }
