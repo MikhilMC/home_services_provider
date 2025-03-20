@@ -7,6 +7,7 @@ import 'package:home_services_provider/app_modules/add_services_module/bloc/add_
 import 'package:home_services_provider/app_modules/add_services_module/bloc/categories_list_bloc/categories_list_bloc.dart';
 import 'package:home_services_provider/app_modules/add_services_module/bloc/sub_services_list_bloc/sub_services_list_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/booked_services_bloc/booked_services_bloc.dart';
+import 'package:home_services_provider/app_modules/home_module/bloc/booking_history_bloc/booking_history_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/profile_bloc/profile_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/provider_services_bloc/provider_services_bloc.dart';
 import 'package:home_services_provider/app_modules/login_module/bloc/login_bloc.dart';
@@ -61,6 +62,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => StartWorkBloc(),
+        ),
+        BlocProvider(
+          create: (context) => BookingHistoryBloc(),
         ),
       ],
       child: MaterialApp(

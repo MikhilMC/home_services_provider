@@ -44,21 +44,22 @@ class _WorksWidgetState extends State<WorksWidget> {
         return CustomScrollView(
           slivers: [
             // Booked Works Section
-            if (bookedServices.bookedServices.isNotEmpty)
-              SliverPadding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Booked Works',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  bookedServices.bookedServices.isNotEmpty
+                      ? 'Booked Works'
+                      : 'No booked works available',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
               ),
+            ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) => Padding(
@@ -73,21 +74,22 @@ class _WorksWidgetState extends State<WorksWidget> {
             ),
 
             // Ongoing Works Section
-            if (bookedServices.ongoingServices.isNotEmpty)
-              SliverPadding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                sliver: SliverToBoxAdapter(
-                  child: Text(
-                    'Ongoing Works',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
+
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  bookedServices.ongoingServices.isNotEmpty
+                      ? 'Ongoing Works'
+                      : 'No ongoing works available',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
                 ),
               ),
+            ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) => Padding(

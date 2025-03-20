@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/home_module/bloc/booking_history_bloc/booking_history_bloc.dart';
+import 'package:home_services_provider/app_modules/home_module/widget/history_card.dart';
+import 'package:home_services_provider/app_widgets/custom_error_widget.dart';
+import 'package:home_services_provider/app_widgets/empty_list.dart';
 
 class HistoryWidget extends StatefulWidget {
   const HistoryWidget({super.key});
@@ -10,143 +14,57 @@ class HistoryWidget extends StatefulWidget {
 }
 
 class _HistoryWidgetState extends State<HistoryWidget> {
-  // Sample Work History Data
-  final List<Map<String, dynamic>> historyData = [
-    {
-      "requester": "Alice Johnson",
-      "profileImage": "https://placehold.co/500x5000",
-      "category": "Home Maintenance",
-      "service": "Plumbing",
-      "date": "2025-03-05",
-      "start_time": "14:00",
-      "end_time": "17:00",
-      "rate": 50.0,
-      "status": "Completed",
-      "rating": 4.5,
-      "review":
-          "Great service! The plumber was very professional and efficient."
-    },
-    {
-      "requester": "Michael Smith",
-      "profileImage": "https://placehold.co/500x500",
-      "category": "Woodwork",
-      "service": "Carpentry",
-      "date": "2025-03-03",
-      "start_time": "10:00",
-      "end_time": "13:00",
-      "rate": 80.0,
-      "status": "Completed",
-      "rating": 3.0,
-      "review": "The work was okay, but it took longer than expected."
-    },
-    {
-      "requester": "Sarah Lee",
-      "profileImage": "https://placehold.co/500x500",
-      "category": "Painting & Decorating",
-      "service": "Wall Painting",
-      "date": "2025-02-28",
-      "start_time": "08:00",
-      "end_time": "11:00",
-      "rate": 100.0,
-      "status": "Completed",
-      "rating": 5.0,
-      "review": "Excellent work! The paint job was flawless and neat."
-    }
-  ];
-
-  // Function to format date
-  String _formatDate(String dateString) {
-    DateTime date = DateTime.parse(dateString);
-    return DateFormat('EEEE, MMM d, yyyy')
-        .format(date); // Example: Tuesday, Mar 5, 2025
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<BookingHistoryBloc>()
+        .add(BookingHistoryEvent.bookingHistoryFetched());
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(10),
-      itemCount: historyData.length,
-      itemBuilder: (context, index) {
-        final work = historyData[index];
+    return BlocBuilder<BookingHistoryBloc, BookingHistoryState>(
+      builder: (context, state) {
+        if (state is BookingHistoryError) {
+          return CustomErrorWidget(
+            errorMessage: state.errorMessage,
+          );
+        }
 
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // User & Service Info
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(work["profileImage"]),
-                  ),
-                  title: Text(work["requester"],
-                      style: Theme.of(context).textTheme.titleMedium),
-                  subtitle: Text(work["category"],
-                      style: Theme.of(context).textTheme.bodySmall),
-                ),
+        if (state is BookingHistoryEmpty) {
+          return EmptyList(
+            message: "Your booking history is empty.",
+          );
+        }
 
-                const SizedBox(height: 5),
-
-                // Service & Work Details
-                Text(
-                  "${work["service"]} - ₹${work["rate"]}/work",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 3),
-
-                // Date & Time Slot
-                Row(
-                  children: [
-                    const Icon(Icons.calendar_today,
-                        size: 16, color: Colors.grey),
-                    const SizedBox(width: 5),
-                    Text(_formatDate(work["date"]),
-                        style: Theme.of(context).textTheme.bodySmall),
-                  ],
-                ),
-                const SizedBox(height: 3),
-
-                Row(
-                  children: [
-                    const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                    const SizedBox(width: 5),
-                    Text("${work["start_time"]} - ${work["end_time"]}",
-                        style: Theme.of(context).textTheme.bodySmall),
-                  ],
-                ),
-
-                const SizedBox(height: 5),
-
-                // Rating Bar
-                RatingBarIndicator(
-                  rating: work["rating"].toDouble(),
-                  itemBuilder: (context, _) =>
-                      const Icon(Icons.star, color: Colors.amber),
-                  itemCount: 5,
-                  itemSize: 20,
-                ),
-
-                const SizedBox(height: 5),
-
-                // Review Text
-                Text(
-                  "\"${work["review"]}\"",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontStyle: FontStyle.italic),
-                ),
-              ],
+        if (state is! BookingHistorySuccess) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: AppColors.firstColor,
             ),
-          ),
+          );
+        }
+
+        final bookingHistory = state.bookingHistory;
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(10),
+          itemCount: bookingHistory.length,
+          itemBuilder: (context, index) {
+            final work = bookingHistory[index];
+
+            return HistoryCard(
+              userName: work.userName,
+              category: work.serviceDetails.categoryName,
+              service: work.serviceDetails.serviceName,
+              rate: work.serviceDetails.price,
+              date: work.bookingDate,
+              startTime: work.slotStartTime,
+              endTime: work.slotEndTime,
+              status: work.status,
+            );
+          },
         );
       },
     );
