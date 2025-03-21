@@ -26,4 +26,6 @@ class AppUrls {
   static const String startWorkUrl = "$serviceUrl/status_ongoing/";
 
   static const String getUserReviewsUrl = "$serviceUrl/provider_view_reviews/";
+
+  static const String getLast10WorksUrl = "$serviceUrl/last_10_works/";
 }
