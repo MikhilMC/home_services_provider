@@ -8,6 +8,7 @@ import 'package:home_services_provider/app_modules/add_services_module/bloc/cate
 import 'package:home_services_provider/app_modules/add_services_module/bloc/sub_services_list_bloc/sub_services_list_bloc.dart';
 import 'package:home_services_provider/app_modules/earnings_module/bloc/last_10_works_bloc/last_10_works_bloc.dart';
 import 'package:home_services_provider/app_modules/earnings_module/bloc/last_15_days_earnings_bloc/last_15_days_earnings_bloc.dart';
+import 'package:home_services_provider/app_modules/earnings_module/bloc/total_earnings_bloc/total_earnings_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/booked_services_bloc/booked_services_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/booking_history_bloc/booking_history_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/profile_bloc/profile_bloc.dart';
@@ -77,6 +78,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => Last15DaysEarningsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => TotalEarningsBloc(),
         ),
       ],
       child: MaterialApp(

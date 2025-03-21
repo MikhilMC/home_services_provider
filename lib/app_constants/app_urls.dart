@@ -30,4 +30,6 @@ class AppUrls {
   static const String getLast10WorksUrl = "$serviceUrl/last_10_works/";
   static const String getLast15DaysEarningsUrl =
       "$serviceUrl/service_provider_15days/";
+  static const String getTotalEarningsUrl =
+      "$serviceUrl/service_provider_earnings/";
 }

@@ -50,7 +50,7 @@ class _EarningsBarGraphState extends State<EarningsBarGraph> {
       earnings[i] = dataMap[date] ?? 0.0;
     }
 
-    return earnings.reversed.toList();
+    return earnings;
   }
 
   @override
