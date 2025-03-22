@@ -12,6 +12,7 @@ class WorkModel {
   int id;
   String userName;
   ServiceDetails serviceDetails;
+  String platformFee;
   String slotStartTime;
   String slotEndTime;
   DateTime bookingDate;
@@ -21,6 +22,7 @@ class WorkModel {
     required this.id,
     required this.userName,
     required this.serviceDetails,
+    required this.platformFee,
     required this.slotStartTime,
     required this.slotEndTime,
     required this.bookingDate,
@@ -31,6 +33,7 @@ class WorkModel {
         id: json["id"],
         userName: json["user_name"],
         serviceDetails: ServiceDetails.fromJson(json["service_details"]),
+        platformFee: json["platform_fee"],
         slotStartTime: json["slot_start_time"],
         slotEndTime: json["slot_end_time"],
         bookingDate: DateTime.parse(json["booking_date"]),
@@ -41,6 +44,7 @@ class WorkModel {
         "id": id,
         "user_name": userName,
         "service_details": serviceDetails.toJson(),
+        "platform_fee": platformFee,
         "slot_start_time": slotStartTime,
         "slot_end_time": slotEndTime,
         "booking_date": bookingDate.toIso8601String(),
@@ -51,7 +55,7 @@ class WorkModel {
 class ServiceDetails {
   int service;
   String serviceName;
-  double price;
+  int price;
   String categoryName;
 
   ServiceDetails({
@@ -64,7 +68,7 @@ class ServiceDetails {
   factory ServiceDetails.fromJson(Map<String, dynamic> json) => ServiceDetails(
         service: json["service"],
         serviceName: json["service_name"],
-        price: json["price"]?.toDouble(),
+        price: json["price"],
         categoryName: json["category_name"],
       );
 
