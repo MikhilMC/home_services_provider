@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:home_services_provider/app_constants/app_localstorage.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:home_services_provider/app_constants/app_urls.dart';
@@ -8,7 +9,7 @@ import 'package:home_services_provider/app_modules/add_availability_slot_module/
 
 Future<ServiceProviderSlotsModel> getServiceProviderSlots() async {
   try {
-    int providerId = 1;
+    int providerId = await AppLocalstorage.getUserId();
     Map<String, dynamic> params = {
       "id": providerId.toString(),
     };

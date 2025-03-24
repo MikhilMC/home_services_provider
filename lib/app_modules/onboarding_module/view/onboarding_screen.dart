@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_constants/app_localstorage.dart';
 import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
 import 'package:home_services_provider/app_modules/onboarding_module/widget/onboarding_page.dart';
 
@@ -59,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
   }
 
-  void _navigateToNextPage() {
+  void _navigateToNextPage() async {
     if (_currentPage < _onboardingPages.length - 1) {
       _pageController.nextPage(
         duration: Duration(milliseconds: 300),
@@ -67,12 +68,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       );
     } else {
       // Navigate to the main app screen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginPage(),
-        ),
-      );
+      await AppLocalstorage.disableIntroScreen();
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+      }
     }
   }
 

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:home_services_provider/app_constants/app_urls.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,9 +11,6 @@ Future<AddServicesResponseModel> addServices({
   required AddServicesDetails addServicesDetails,
 }) async {
   try {
-    if (kDebugMode) {
-      print("service function");
-    }
     Map<String, dynamic> body = {
       "category": addServicesDetails.categoryId.toString(),
       "service_provider": addServicesDetails.serviceProviderId.toString(),
@@ -33,17 +29,12 @@ Future<AddServicesResponseModel> addServices({
         "Content-Type": "application/json; charset=utf-8"
       },
     );
-    if (kDebugMode) {
-      print("after response");
-    }
 
     if (resp.statusCode == 201) {
       final dynamic decoded = jsonDecode(resp.body);
       final AddServicesResponseModel response =
           AddServicesResponseModel.fromJson(decoded);
-      if (kDebugMode) {
-        print("response: $response");
-      }
+
       return response;
     } else {
       final Map<String, dynamic> errorResponse = jsonDecode(resp.body);

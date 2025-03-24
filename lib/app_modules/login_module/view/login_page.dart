@@ -1,7 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_constants/app_localstorage.dart';
 import 'package:home_services_provider/app_modules/add_services_module/view/add_services_page.dart';
 import 'package:home_services_provider/app_modules/home_module/view/home_page.dart';
 import 'package:home_services_provider/app_modules/login_module/bloc/login_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:home_services_provider/app_widgets/custom_button.dart';
 import 'package:home_services_provider/app_widgets/normal_text_field.dart';
 import 'package:home_services_provider/app_widgets/overlay_loader_widget.dart';
 import 'package:home_services_provider/app_widgets/password_text_field.dart';
+import 'package:home_services_provider/main.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -50,56 +52,73 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           state.whenOrNull(
             loading: () {},
-            success: (response) {
-              if (kDebugMode) {
-                print("response: $response");
-              }
-              if (response.status == "success") {
-                switch (response.userstatus) {
-                  case "services_not_added":
-                    AppHelper.showCustomSnackBar(
-                      context,
-                      "You need to add your services",
-                    );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddServicesPage(
-                          serviceProviderId: response.userId,
-                        ),
-                      ),
-                    );
-                    break;
-                  case "services_added":
-                    AppHelper.showErrorDialogue(
-                      context,
-                      "Your account have not approved yet. Please try again later, or contact admin.",
-                    );
-                    break;
-                  case "rejected":
-                    AppHelper.showErrorDialogue(
-                      context,
-                      "Your account have rejected. Please contact admin.",
-                    );
-                    break;
-                  default:
-                    AppHelper.showCustomSnackBar(
-                      context,
-                      "Loggedin successfully",
-                    );
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(),
-                      ),
-                    );
-                    break;
+            success: (response) async {
+              if (mounted) {
+                if (response.status == "success") {
+                  switch (response.userstatus) {
+                    case "services_not_added":
+                      // Use navigatorKey for safe navigation
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        MyApp.navigatorKey.currentState?.pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => AddServicesPage(
+                              serviceProviderId: response.userId,
+                            ),
+                          ),
+                        );
+
+                        AppHelper.showCustomSnackBar(
+                          context,
+                          "You need to add your services",
+                        );
+                      });
+
+                      break;
+                    case "services_added":
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        AppHelper.showErrorDialogue(
+                          context,
+                          "Your account have not approved yet. Please try again later, or contact admin.",
+                        );
+                      });
+
+                      break;
+                    case "rejected":
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        AppHelper.showErrorDialogue(
+                          context,
+                          "Your account have rejected. Please contact admin.",
+                        );
+                      });
+
+                      break;
+                    default:
+                      await AppLocalstorage.userLogin(
+                        username: response.username,
+                        userId: response.userId,
+                      );
+
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        MyApp.navigatorKey.currentState?.pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                        );
+
+                        AppHelper.showCustomSnackBar(
+                          context,
+                          "Loggedin successfully",
+                        );
+                      });
+
+                      break;
+                  }
+                } else {
+                  AppHelper.showErrorDialogue(
+                    context,
+                    "Login Failed",
+                  );
                 }
-              } else {
-                AppHelper.showErrorDialogue(
-                  context,
-                  "Login Failed",
-                );
               }
             },
             failure: (errorMessage) => AppHelper.showErrorDialogue(

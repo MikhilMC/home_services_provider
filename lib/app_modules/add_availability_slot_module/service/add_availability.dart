@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:home_services_provider/app_constants/app_localstorage.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:home_services_provider/app_constants/app_urls.dart';
@@ -12,7 +13,7 @@ Future<AddAvailabilityResponseModel> addAvailability({
   required List<int> slotIds,
 }) async {
   try {
-    int serviceProviderId = 1;
+    int serviceProviderId = await AppLocalstorage.getUserId();
     Map<String, dynamic> body = {
       "service_provider_id": serviceProviderId.toString(),
       "date":
