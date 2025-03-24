@@ -21,6 +21,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentPageIndex = 0;
 
+  final PageController _pageController = PageController();
+
   final List<Widget> _appBodies = [
     WorksWidget(),
     HistoryWidget(),
@@ -53,8 +55,9 @@ class _HomePageState extends State<HomePage> {
             if (state is UsernameError) {
               return Text("Error: ${state.errorMessage}");
             }
+
             if (state is! UsernameSuccess) {
-              return const Text("Loading...");
+              return Text("Loading...");
             }
             return Text("Hello, ${state.username}");
           },
@@ -65,95 +68,35 @@ class _HomePageState extends State<HomePage> {
           fontWeight: FontWeight.bold,
         ),
       ),
-
-      // Drawer is now accessible
-      drawer: Drawer(
-        backgroundColor: AppColors.fourthColor,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColors.firstColor,
-              ),
-              child: Text(
-                'Home Service',
-                style: TextStyle(
-                  color: AppColors.fourthColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.event_available, color: AppColors.firstColor),
-              title: const Text('Add Availability',
-                  style: TextStyle(fontSize: 18)),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AddAvailabilitySlotPage(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.monetization_on, color: AppColors.firstColor),
-              title: const Text('Earnings', style: TextStyle(fontSize: 18)),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => EarningsPage(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.reviews, color: AppColors.firstColor),
-              title: const Text('User Reviews', style: TextStyle(fontSize: 18)),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ReviewListPage(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout, color: AppColors.firstColor),
-              title: const Text('Log Out', style: TextStyle(fontSize: 18)),
-              onTap: _logout,
-            ),
-          ],
-        ),
-      ),
-
-      // Use IndexedStack instead of PageView
-      body: IndexedStack(
-        index: _currentPageIndex,
-        children: _appBodies,
-      ),
-
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-          indicatorColor: AppColors.secondColor.withValues(alpha: 0.2),
+          indicatorColor: AppColors.secondColor,
           backgroundColor: AppColors.fourthColor,
           iconTheme: WidgetStateProperty.resolveWith<IconThemeData?>(
-            (states) => IconThemeData(
-              color: states.contains(WidgetState.selected)
-                  ? AppColors.firstColor
-                  : AppColors.secondColor,
-            ),
+            (states) {
+              if (states.contains(WidgetState.selected)) {
+                return IconThemeData(
+                  color: AppColors.fourthColor,
+                ); // Icon color for selected item
+              }
+              return IconThemeData(
+                color: AppColors.firstColor,
+              ); // Icon color for unselected items
+            },
           ),
           labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-            (states) => TextStyle(
-              color: states.contains(WidgetState.selected)
-                  ? AppColors.firstColor
-                  : AppColors.secondColor,
-              fontWeight: states.contains(WidgetState.selected)
-                  ? FontWeight.bold
-                  : FontWeight.normal,
-            ),
+            (states) {
+              if (states.contains(WidgetState.selected)) {
+                return TextStyle(
+                  color: AppColors.firstColor, // Text color for selected item
+                  fontWeight: FontWeight.bold,
+                );
+              }
+              return const TextStyle(
+                color: AppColors.secondColor, // Text color for unselected items
+                fontWeight: FontWeight.normal,
+              );
+            },
           ),
         ),
         child: NavigationBar(
@@ -161,8 +104,14 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               _currentPageIndex = index;
             });
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
           },
           selectedIndex: _currentPageIndex,
+          // labelBehavior: ,
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.work),
@@ -175,6 +124,114 @@ class _HomePageState extends State<HomePage> {
             NavigationDestination(
               icon: Icon(Icons.person),
               label: "Profile",
+            ),
+          ],
+        ),
+      ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentPageIndex = index;
+          });
+        },
+        children: _appBodies,
+      ),
+      drawer: Drawer(
+        backgroundColor: AppColors.fourthColor,
+        child: ListView(
+          padding: const EdgeInsets.all(0),
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: AppColors.firstColor,
+              ),
+              child: Text(
+                'VaxCare',
+                style: TextStyle(
+                  color: AppColors.fourthColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 40,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.event_available,
+                color: AppColors.firstColor,
+              ),
+              title: const Text(
+                'Add Availability',
+                style: TextStyle(
+                  color: AppColors.firstColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AddAvailabilitySlotPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.monetization_on,
+                color: AppColors.firstColor,
+              ),
+              title: const Text(
+                'Earnings',
+                style: TextStyle(
+                  color: AppColors.firstColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => EarningsPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.reviews,
+                color: AppColors.firstColor,
+              ),
+              title: const Text(
+                'User Reviews',
+                style: TextStyle(
+                  color: AppColors.firstColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ReviewListPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.logout,
+                color: AppColors.firstColor,
+              ),
+              title: const Text(
+                'Log Out',
+                style: TextStyle(
+                  color: AppColors.firstColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              onTap: _logout,
             ),
           ],
         ),
