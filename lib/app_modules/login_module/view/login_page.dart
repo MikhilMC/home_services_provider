@@ -53,74 +53,72 @@ class _LoginPageState extends State<LoginPage> {
           state.whenOrNull(
             loading: () {},
             success: (response) async {
-              if (mounted) {
-                if (response.status == "success") {
-                  switch (response.userstatus) {
-                    case "services_not_added":
-                      // Use navigatorKey for safe navigation
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        MyApp.navigatorKey.currentState?.pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => AddServicesPage(
-                              serviceProviderId: response.userId,
-                            ),
+              if (response.status == "success") {
+                switch (response.userstatus) {
+                  case "services_not_added":
+                    // Use navigatorKey for safe navigation
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      MyApp.navigatorKey.currentState?.pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => AddServicesPage(
+                            serviceProviderId: response.userId,
                           ),
-                        );
-
-                        AppHelper.showCustomSnackBar(
-                          context,
-                          "You need to add your services",
-                        );
-                      });
-
-                      break;
-                    case "services_added":
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        AppHelper.showErrorDialogue(
-                          context,
-                          "Your account have not approved yet. Please try again later, or contact admin.",
-                        );
-                      });
-
-                      break;
-                    case "rejected":
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        AppHelper.showErrorDialogue(
-                          context,
-                          "Your account have rejected. Please contact admin.",
-                        );
-                      });
-
-                      break;
-                    default:
-                      await AppLocalstorage.userLogin(
-                        username: response.username,
-                        userId: response.userId,
+                        ),
                       );
 
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        MyApp.navigatorKey.currentState?.pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
-                        );
+                      AppHelper.showCustomSnackBar(
+                        context,
+                        "You need to add your services",
+                      );
+                    });
 
-                        AppHelper.showCustomSnackBar(
-                          context,
-                          "Loggedin successfully",
-                        );
-                      });
+                    break;
+                  case "services_added":
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      AppHelper.showErrorDialogue(
+                        context,
+                        "Your account have not approved yet. Please try again later, or contact admin.",
+                      );
+                    });
 
-                      break;
-                  }
-                } else {
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    AppHelper.showErrorDialogue(
-                      context,
-                      "Login Failed",
+                    break;
+                  case "rejected":
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      AppHelper.showErrorDialogue(
+                        context,
+                        "Your account have rejected. Please contact admin.",
+                      );
+                    });
+
+                    break;
+                  default:
+                    await AppLocalstorage.userLogin(
+                      username: response.username,
+                      userId: response.userId,
                     );
-                  });
+
+                    SchedulerBinding.instance.addPostFrameCallback((_) {
+                      MyApp.navigatorKey.currentState?.pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                        ),
+                      );
+
+                      AppHelper.showCustomSnackBar(
+                        context,
+                        "Loggedin successfully",
+                      );
+                    });
+
+                    break;
                 }
+              } else {
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  AppHelper.showErrorDialogue(
+                    context,
+                    "Login Failed",
+                  );
+                });
               }
             },
             failure: (errorMessage) => AppHelper.showErrorDialogue(
