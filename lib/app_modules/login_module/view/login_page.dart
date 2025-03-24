@@ -114,10 +114,12 @@ class _LoginPageState extends State<LoginPage> {
                       break;
                   }
                 } else {
-                  AppHelper.showErrorDialogue(
-                    context,
-                    "Login Failed",
-                  );
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    AppHelper.showErrorDialogue(
+                      context,
+                      "Login Failed",
+                    );
+                  });
                 }
               }
             },
