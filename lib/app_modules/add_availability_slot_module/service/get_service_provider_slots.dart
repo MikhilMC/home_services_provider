@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:home_services_provider/app_constants/app_localstorage.dart';
+import 'package:home_services_provider/app_utils/app_localstorage.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:home_services_provider/app_constants/app_urls.dart';

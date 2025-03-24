@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
-import 'package:home_services_provider/app_constants/app_localstorage.dart';
+import 'package:home_services_provider/app_utils/app_localstorage.dart';
 import 'package:home_services_provider/app_modules/add_availability_slot_module/view/add_availability_slot_page.dart';
 import 'package:home_services_provider/app_modules/earnings_module/view/earnings_page.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/read_username_bloc/read_username_bloc.dart';

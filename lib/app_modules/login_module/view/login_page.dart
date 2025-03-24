@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
-import 'package:home_services_provider/app_constants/app_localstorage.dart';
+import 'package:home_services_provider/app_utils/app_localstorage.dart';
 import 'package:home_services_provider/app_modules/add_services_module/view/add_services_page.dart';
 import 'package:home_services_provider/app_modules/home_module/view/home_page.dart';
 import 'package:home_services_provider/app_modules/login_module/bloc/login_bloc.dart';
