@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                       // App Logo or Title
                       Center(
                         child: Text(
-                          'Home Service Pro',
+                          'LazyClean',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,

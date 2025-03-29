@@ -224,7 +224,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       // App Logo or Title
                       Center(
                         child: Text(
-                          'Home Service Pro',
+                          'LazyClean',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,

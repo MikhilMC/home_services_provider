@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                 color: AppColors.firstColor,
               ),
               child: Text(
-                'VaxCare',
+                'LazyClean',
                 style: TextStyle(
                   color: AppColors.fourthColor,
                   fontWeight: FontWeight.bold,
