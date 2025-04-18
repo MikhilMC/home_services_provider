@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
+import 'package:home_services_provider/app_modules/register_module/bloc/edit_profile_bloc/edit_profile_bloc.dart';
 import 'package:home_services_provider/app_utils/app_localstorage.dart';
 import 'package:home_services_provider/app_modules/add_availability_slot_module/bloc/add_availability_bloc/add_availability_bloc.dart';
 import 'package:home_services_provider/app_modules/add_availability_slot_module/bloc/slots_bloc/slots_bloc.dart';
@@ -12,14 +13,14 @@ import 'package:home_services_provider/app_modules/earnings_module/bloc/last_15_
 import 'package:home_services_provider/app_modules/earnings_module/bloc/total_earnings_bloc/total_earnings_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/booked_services_bloc/booked_services_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/booking_history_bloc/booking_history_bloc.dart';
-import 'package:home_services_provider/app_modules/home_module/bloc/profile_bloc/profile_bloc.dart';
+import 'package:home_services_provider/app_blocs/profile_bloc/profile_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/provider_services_bloc/provider_services_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/bloc/read_username_bloc/read_username_bloc.dart';
 import 'package:home_services_provider/app_modules/home_module/view/home_page.dart';
 import 'package:home_services_provider/app_modules/login_module/bloc/login_bloc.dart';
 import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
 import 'package:home_services_provider/app_modules/onboarding_module/view/onboarding_screen.dart';
-import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc.dart';
+import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc/registration_bloc.dart';
 import 'package:home_services_provider/app_modules/reviews_module/bloc/user_reviews_bloc.dart';
 import 'package:home_services_provider/app_modules/work_details_module/bloc/start_work_bloc/start_work_bloc.dart';
 import 'package:home_services_provider/app_modules/work_details_module/bloc/work_details_bloc/work_details_bloc.dart';
@@ -108,6 +109,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ReadUsernameBloc(),
+        ),
+        BlocProvider(
+          create: (context) => EditProfileBloc(),
         ),
       ],
       child: MaterialApp(

@@ -18,6 +18,8 @@ class AppUrls {
   static const String getServicesHistoryUrl =
       "$serviceUrl/provider_booking_history/";
 
+  static const String editProfileUrl = "$serviceUrl/update_profile/";
+
   static const String getServiceProviderSlotsUrl = "$serviceUrl/view_slots/";
   static const String addAvailabilitySlotsUrl =
       "$serviceUrl/service_available_time/";

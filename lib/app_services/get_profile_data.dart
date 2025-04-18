@@ -5,7 +5,7 @@ import 'package:home_services_provider/app_utils/app_localstorage.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:home_services_provider/app_constants/app_urls.dart';
-import 'package:home_services_provider/app_modules/home_module/model/profile_model.dart';
+import 'package:home_services_provider/app_models/profile_model.dart';
 
 Future<ProfileModel> getProfileData() async {
   try {

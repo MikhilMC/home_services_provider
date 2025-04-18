@@ -10,20 +10,26 @@ ProfileModel profileModelFromJson(String str) =>
 String profileModelToJson(ProfileModel data) => json.encode(data.toJson());
 
 class ProfileModel {
-  int id;
-  String username;
-  String email;
-  String password;
-  String phone;
-  String image;
+  int? id;
+  String? username;
+  String? email;
+  String? password;
+  String? phone;
+  String? image;
+  String? idProof;
+  String? latitude;
+  String? longitude;
 
   ProfileModel({
-    required this.id,
-    required this.username,
-    required this.email,
-    required this.password,
-    required this.phone,
-    required this.image,
+    this.id,
+    this.username,
+    this.email,
+    this.password,
+    this.phone,
+    this.image,
+    this.idProof,
+    this.latitude,
+    this.longitude,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
@@ -33,6 +39,9 @@ class ProfileModel {
         password: json["password"],
         phone: json["phone"],
         image: json["image"],
+        idProof: json["id_proof"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,5 +51,8 @@ class ProfileModel {
         "password": password,
         "phone": phone,
         "image": image,
+        "id_proof": idProof,
+        "latitude": latitude,
+        "longitude": longitude,
       };
 }

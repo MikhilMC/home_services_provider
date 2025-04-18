@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:home_services_provider/app_modules/home_module/model/profile_model.dart';
-import 'package:home_services_provider/app_modules/home_module/service/get_profile_data.dart';
+import 'package:home_services_provider/app_models/profile_model.dart';
+import 'package:home_services_provider/app_services/get_profile_data.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';

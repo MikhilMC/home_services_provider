@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:home_services_provider/app_constants/app_colors.dart';
 import 'package:home_services_provider/app_modules/add_services_module/view/add_services_page.dart';
 import 'package:home_services_provider/app_modules/login_module/view/login_page.dart';
-import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc.dart';
+import 'package:home_services_provider/app_modules/register_module/bloc/registration_bloc/registration_bloc.dart';
 import 'package:home_services_provider/app_modules/register_module/class/service_provider_details.dart';
 import 'package:home_services_provider/app_utils/app_helper.dart';
 import 'package:home_services_provider/app_widgets/custom_button.dart';
